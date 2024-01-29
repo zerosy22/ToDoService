@@ -65,3 +65,62 @@ class TodoView(View):
         # 결과 리턴
         # return JsonResponse({키:데이터, 키:데이터})
         return JsonResponse({"list":list(todos.values())})
+    
+
+    def get(self, request):    # GET
+        # GET 방식에서 userid 라는 파라미터를 읽기
+        userid = request.GET["userid"]
+        todos = Todo.objects.filter(userid=userid)
+        return JsonResponse({"list":list(todos.values())})
+    
+
+    def put(self, request):    # PUT
+        # 클라이언트의 데이터를 json 형식으로 가져오기
+        request = json.loads(request.body)
+        
+        # userid와 id 그리고 done 값을 읽어서 저장
+        # 클라이언트에서 입력해주는 데이터만 읽어오면 됩니다.
+        userid = request["userid"]
+        id = request["id"]
+        done = request["done"]
+        title = request["title"]
+
+        # 수정할 데이터를 찾아옵니다.
+        todo = Todo.objects.get(id=id)
+        # 수정할 내용을 대입
+        todo.done = done
+        todo.title = title
+        # save는 기본키의 값이 있으면 수정이고 없으면 삽입입니다.
+        todo.save() # 저장
+        # 처리는 끝났어 DB에 들어감
+
+        # userid 와 일치하는 데이터만 추출
+        todos = Todo.objects.filter(userid=userid)
+
+        # 결과 리턴
+        # return JsonResponse({키:데이터, 키:데이터})
+        return JsonResponse({"list":list(todos.values())})
+    
+
+    def delete(self, request):    # DELETE
+        # 클라이언트의 데이터를 json 형식으로 가져오기
+        request = json.loads(request.body)
+        
+        # userid와 id 값을 읽어서 저장
+        # 클라이언트에서 입력해주는 데이터만 읽어오면 됩니다.
+        userid = request["userid"]
+        id = request["id"]
+
+        # 삭제할 데이터를 찾아옵니다.
+        todo = Todo.objects.get(id=id)
+        
+        # user를 확인해서 삭제
+        if userid == todo.userid:
+            todo.delete()
+
+        # userid 와 일치하는 데이터만 추출
+        todos = Todo.objects.filter(userid=userid)
+
+        # 결과 리턴
+        # return JsonResponse({키:데이터, 키:데이터})
+        return JsonResponse({"list":list(todos.values())})
