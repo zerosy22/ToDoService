@@ -39,9 +39,11 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "todoapplication",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -50,6 +52,11 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+# 허용할 도메인을 등록 - 지금은 react 프로젝트라서 3000 번을 등록
+# 실제로는 배포하는 도메인을 등록
+CORS_ORIGIN_WHITELIST = ['https://127.0.0.1:3000', 'http://localhost:3000']
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = "todoproject.urls"
 
